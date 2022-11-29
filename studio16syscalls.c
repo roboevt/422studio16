@@ -1,5 +1,7 @@
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 
 #define EXPECTED_ARGS 2
 #define FILENAME_ARG 1
@@ -11,11 +13,11 @@ int main(int argc, char* argv[]) {
         printf("Usage: %s file, format\n", argv[0]);
         return 1;
     }
-    FILE* file = fopen(argv[FILENAME_ARG], "w");
-
-    for(i = 2; i < argc - 1; i++) {
-        fprintf(file, "%s\n", argv[i]);
+    int fd = open(argv[FILENAME_ARG], O_WRONLY | O_TRUNC);
+    for(i = 2; i < argc; i++) {
+        write(fd, argv[i], strlen(argv[i]));
+        write(fd, "\n", 2);
     }
-    fclose(file);
+    close(fd);
     return 0;
 }
